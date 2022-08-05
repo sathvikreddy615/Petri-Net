@@ -134,7 +134,6 @@
 
     /* * * * * * * * Machine manipulation functions * * * * * * * */
     SimPNControl.prototype._initSM = function () {
-        console.log("starting initSM")
         const self = this;
         //just for the ease of use, lets create a META dictionary
         const rawMETA = self._client.getAllMetaNodes();
@@ -147,11 +146,6 @@
         //we need our states (names, position, type), need the set of next state (with event names)
         const smNode = self._client.getNode(self._currentNodeId);
         const elementIds = smNode.getChildrenIds();
-
-        const path2node = {}
-        elementIds.forEach(eid => {
-            path2node[eid] = self._client.getNode(eid)
-        })
 
         const pn = {states:{}};
         elementIds.forEach(elementId => {

@@ -63,6 +63,7 @@
                             self._webgmeSM.states[p.id].tokens++
                         })
                         //self._jointPaper.updateViews();
+                        self.refresh()
                     } else {
                         //notify user that it is deadlocked
                         console.log("No enabled transition")
@@ -77,13 +78,10 @@
     SimPNWidget.prototype.onWidgetContainerResize = function (width, height) {
         this._logger.debug('Widget is resizing...');
     };
-    
-    // State Machine manipulating functions called from the controller
-    SimPNWidget.prototype.initMachine = function (graph) {
-        console.log("starting initMachine")
-        const self = this;
 
-        self._webgmeSM = graph;
+    SimPNWidget.prototype.refresh = function () {
+        console.log("starting refresh")
+        const self = this;
         self._jointSM.clear();
         const sm = self._webgmeSM;
         sm.id2state = {}; // this dictionary will connect the on-screen id to the state id
@@ -185,6 +183,15 @@
         //now refresh the visualization
         self._jointPaper.updateViews();
         self._decorateMachine();
+    }
+    
+    // State Machine manipulating functions called from the controller
+    SimPNWidget.prototype.initMachine = function (graph) {
+        const self = this;
+
+        self._webgmeSM = graph;
+        console.log("doing hit")
+        self.refresh()
     };
 
     SimPNWidget.prototype.CreateLink = function (a, b) {
