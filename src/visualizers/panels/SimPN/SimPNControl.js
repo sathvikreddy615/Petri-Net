@@ -306,8 +306,6 @@
     };
 
     SimPNControl.prototype._initializeToolbar = function () {
-        console.log("initiliaze toolbar")
-        console.log("TESSTT")
         var self = this,
             toolBar = WebGMEGlobal.Toolbar;
 
@@ -325,6 +323,26 @@
         });
         this._toolbarItems.push(this.$btnModelHierarchyUp);
         this.$btnModelHierarchyUp.hide();
+
+        /************** Button to run classifications check ****************/
+        this.$btnClassificationsCheck = toolBar.addButton({
+            title: 'Check Petri Net classifications',
+            icon: 'glyphicon glyphicon-question-sign',
+            clickFn: function (/*data*/) {
+                const context = self._client.getCurrentPluginContext('ClassificationsCheck',self._currentNodeId, []);
+                // !!! it is important to fill out or pass an empty object as the plugin config otherwise we might get errors...
+                context.pluginConfig = {};
+                self._client.runServerPlugin(
+                    'ClassificationsCheck', 
+                    context, 
+                    function(err, result){
+                        // here comes any additional processing of results or potential errors.
+                        console.log('plugin err:', err);
+                        console.log('plugin result:', result);
+                });
+            }
+        });
+        this._toolbarItems.push(this.$btnClassificationsCheck);
 
         /************** Checkbox example *******************/
 
