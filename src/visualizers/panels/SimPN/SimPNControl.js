@@ -153,7 +153,7 @@
             path2node[eid] = self._client.getNode(eid)
         })
 
-        const sm = {init: null, states:{}};
+        const pn = {states:{}};
         elementIds.forEach(elementId => {
             const node = self._client.getNode(elementId); 
             // the simple way of checking type
@@ -168,11 +168,6 @@
                     position: node.getRegistry('position')
                 };
 
-                // one way to check meta-type in the client context - though it does not check for generalization types like State
-                // if ('Init' === self._client.getNode(node.getMetaTypeId()).getAttribute('name')) {
-                //     sm.init = elementId;
-                // }
-
                 // this is in no way optimal, but shows clearly what we are looking for when we collect the data
                 elementIds.forEach(eid2 => {
                     const arc = self._client.getNode(eid2);
@@ -186,29 +181,32 @@
                         const dst_parentId = dst_node.getParentId()
                     
                         if(src_parentId === elementId) {
-                            //state.next[arc.getAttribute('event')] = arc.getPointerId('dst');
+                            const tokens = self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? self._client.getNode(src_parentId).getAttribute('tokens') : null
                             state.paths_to.push({
                                 id: dst_parentId,
                                 name: self._client.getNode(dst_parentId).getAttribute('name'),
-                                okens: self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? self._client.getNode(dst_parentId).getAttribute('tokens') : null,
+                                tokens: tokens,
+                                tokens_update: tokens,
                                 meta_type: self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })
                         } else if (dst_parentId == elementId) {
+                            const tokens = self._client.getNode(src_parentId).isTypeOf(META['Place']) ? self._client.getNode(src_parentId).getAttribute('tokens') : null
                             state.paths_from.push({
                                 id: src_parentId,
                                 name: self._client.getNode(src_parentId).getAttribute('name'),
-                                tokens: self._client.getNode(src_parentId).isTypeOf(META['Place']) ? self._client.getNode(src_parentId).getAttribute('tokens') : null,
+                                tokens: tokens,
+                                tokens_update: tokens,
                                 meta_type: self._client.getNode(src_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })
                         }
                     }
                 });
-                sm.states[elementId] = state;
+                pn.states[elementId] = state;
             }
         });
-        //sm.setFireableEvents = this.setFireableEvents;
+        //pn.setFireableEvents = this.setFireableEvents;
 
-        self._widget.initMachine(sm);
+        self._widget.initMachine(pn);
     };
 
     SimPNControl.prototype.clearSM = function () {

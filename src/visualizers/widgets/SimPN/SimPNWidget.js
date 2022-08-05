@@ -46,7 +46,27 @@
             if (self._webgmeSM) {
                 const id = self._webgmeSM.id2state[elementView.model.id]
                 if (self._webgmeSM.states[id].meta_type == "Transition") {
-                    console.log("Clicked Transition")
+                    const currentElement = self._webgmeSM.states[id]
+                    const in_places = currentElement.paths_from
+                    const out_places = currentElement.paths_to
+                    const isTransitionEnabled = in_places.length == in_places.filter(x => x.tokens>0).length
+                    if (isTransitionEnabled && out_places.length > 0) {
+                        // iterate in places
+                        in_places.forEach(p => {
+                            console.log("decrementing tokens for in-places")
+                            self._webgmeSM.states[p.id].tokens--
+                        })
+
+                        //update the tokens for out_places
+                        out_places.forEach(p => {
+                            console.log("incrementing tokens for out-places")
+                            self._webgmeSM.states[p.id].tokens++
+                        })
+                        //self._jointPaper.updateViews();
+                    } else {
+                        //notify user that it is deadlocked
+                        console.log("No enabled transition")
+                    }         
                 }
             }
         });
@@ -64,7 +84,6 @@
         const self = this;
 
         self._webgmeSM = graph;
-        self._webgmeSM.current = self._webgmeSM.init;
         self._jointSM.clear();
         const sm = self._webgmeSM;
         sm.id2state = {}; // this dictionary will connect the on-screen id to the state id
@@ -186,6 +205,24 @@
     SimPNWidget.prototype.destroyMachine = function () {
 
     };
+
+    SimPNWidget.prototype.fireTransition = function (element, states) {
+        console.log("firing transitions")
+        element.paths_from.forEach(p => {
+            if (p.tokens > 0)
+                // console.log(this._webgmeSM)
+                // console.log("this hit")
+                // console.log(states)
+                this._webgmeSM.states[p.id].tokens -= 1
+        })
+
+        element.paths_from.forEach(p => {
+            this._webgmeSM.states[p.id].tokens += 1
+        })
+        
+        //self._webgmeSM.states
+        console.log(element)
+    }
 
     SimPNWidget.prototype.fireEvent = function (event) {
         // const self = this;
