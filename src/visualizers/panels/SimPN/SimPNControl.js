@@ -105,7 +105,6 @@
     /* * * * * * * * Node Event Handling * * * * * * * */
     SimPNControl.prototype._eventCallback = function (events) {
         const self = this;
-        console.log(events);
         events.forEach(event => {
             if (event.eid && 
                 event.eid === self._currentNodeId ) {

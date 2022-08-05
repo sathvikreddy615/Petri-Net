@@ -68,48 +68,43 @@
         sm.id2state = {}; // this dictionary will connect the on-screen id to the state id
         // first add the states
 
+        var pn = joint.shapes.pn;
         Object.keys(sm.states).forEach(id => {
             let vertex = null;
             if (sm.states[id].meta_type == "Place") {
-                vertex = new joint.shapes.standard.Circle({
+                vertex = new pn.Place({
                     position: sm.states[id].position,
-                    size: { width: 30, height: 30 },
                     attrs: {
-                        label : {
-                            text: `${sm.states[id].name}-${sm.states[id].tokens}`,
-                            //event: 'element:label:pointerdown',
-                            fontWeight: 'bold',
-                            //cursor: 'text',
-                            //style: {
-                            //    userSelect: 'text'
-                            //}
+                        '.label': {
+                            'text': `${sm.states[id].name}-${sm.states[id].tokens}`,
+                            'fill': '#7c68fc' },
+                        '.root': {
+                            'stroke': '#9586fd',
+                            'stroke-width': 3
                         },
-                        body: {
-                            fill: '#FFFFFF',
-                            cursor: 'pointer'
+                        '.tokens > circle': {
+                            'fill': '#7a7e9b'
+                        }
+                    },
+                    tokens: 1
+                });
+            } else if (sm.states[id].meta_type == "Transition") {
+                vertex = new pn.Transition({
+                    position: sm.states[id].position,
+                    attrs: {
+                        '.label': {
+                            'text': sm.states[id].name,
+                            'fill': '#fe854f'
+                        },
+                        '.root': {
+                            'fill': '#9586fd',
+                            'stroke': '#9586fd'
+                        },
+                        '.body': {
+                            'cursor': 'pointer',
                         }
                     }
                 });
-            } else if (sm.states[id].meta_type == "Transition") {
-                vertex = new joint.shapes.standard.Rectangle({
-                    position: sm.states[id].position,
-                    size: { width: 30, height: 30 },
-                    attrs: {
-                        label : {
-                            text: sm.states[id].name,
-                            //event: 'element:label:pointerdown',
-                            fontWeight: 'bold',
-                            //cursor: 'text',
-                            //style: {
-                            //    userSelect: 'text'
-                            //}
-                        },
-                        body: {
-                            fill: '#FFFFFF',
-                            cursor: 'pointer'
-                        }
-                    }
-                });  
             }
             vertex.addTo(self._jointSM);
             sm.states[id].joint = vertex;
@@ -123,6 +118,18 @@
             state.paths_to.forEach(event => {
                 state.jointNext = state.jointNext || {};
                 const substate = sm.states[event.id]
+                // const link = new pn.Link({
+                //     source: {id: state.joint.id, selector: '.root'},
+                //     target: {id: substate.joint.id, selector: '.root' },
+                //     attrs: {
+                //         '.connection': {
+                //             'fill': 'none',
+                //             'stroke-linejoin': 'round',
+                //             'stroke-width': '2',
+                //             'stroke': '#4b4a67'
+                //         }
+                //     }
+                // });
                 const link = new joint.shapes.standard.Link({
                     source: {id: state.joint.id},
                     target: {id: substate.joint.id},
@@ -151,7 +158,6 @@
                         }
                     }]
                 });
-                console.log(link)
                 link.addTo(self._jointSM);
                 state.jointNext[event] = link;
             })
@@ -160,6 +166,21 @@
         //now refresh the visualization
         self._jointPaper.updateViews();
         self._decorateMachine();
+    };
+
+    SimPNWidget.prototype.CreateLink = function (a, b) {
+        return new pn.Link({
+            source: { id: a.id, selector: '.root' },
+            target: { id: b.id, selector: '.root' },
+            attrs: {
+                '.connection': {
+                    'fill': 'none',
+                    'stroke-linejoin': 'round',
+                    'stroke-width': '2',
+                    'stroke': '#4b4a67'
+                }
+            }
+        });
     };
 
     SimPNWidget.prototype.destroyMachine = function () {
