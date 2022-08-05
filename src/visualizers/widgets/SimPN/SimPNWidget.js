@@ -42,10 +42,12 @@
         });
         
         // add event calls to elements
-        this._jointPaper.on('element:pointerdblclick', function(elementView) {
-            const currentElement = elementView.model;
+        this._jointPaper.on('element:pointerclick', function(elementView) {
             if (self._webgmeSM) {
-                self._setCurrentState(self._webgmeSM.id2state[currentElement.id]);
+                const id = self._webgmeSM.id2state[elementView.model.id]
+                if (self._webgmeSM.states[id].meta_type == "Transition") {
+                    console.log("Clicked Transition")
+                }
             }
         });
 
@@ -98,10 +100,8 @@
                         },
                         '.root': {
                             'fill': '#9586fd',
-                            'stroke': '#9586fd'
-                        },
-                        '.body': {
-                            'cursor': 'pointer',
+                            'stroke': '#9586fd',
+                            'cursor': 'pointer'
                         }
                     }
                 });
