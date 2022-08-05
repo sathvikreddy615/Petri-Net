@@ -4,9 +4,16 @@
       "PetriNet": {
         "src": "src/seeds/PetriNet"
       }
+    },
+    "plugins": {
+      "ClassificationsCheck": {
+        "src": "src/plugins/ClassificationsCheck",
+        "test": "test/plugins/ClassificationsCheck"
+      }
     }
   },
   "dependencies": {
-    "seeds": {}
+    "seeds": {},
+    "plugins": {}
   }
 }

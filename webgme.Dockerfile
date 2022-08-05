@@ -11,6 +11,7 @@ RUN echo "alias python=python3" >> ~/.bashrc
 RUN echo "alias pip=pip3" >> ~/.bashrc
 
 # installing Python packages
+RUN pip install webgme_bindings
 RUN pip3 install webgme-bindings
 RUN pip3 install jinja2
 RUN pip3 install networkx
