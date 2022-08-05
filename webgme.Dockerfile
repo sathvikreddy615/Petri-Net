@@ -4,7 +4,8 @@ FROM node:14
 RUN apt update
 RUN apt install -y software-properties-common sudo
 RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt install -y python3.9
+RUN apt install -y python
+RUN apt install -y python-pip
 RUN apt install -y python3-pip
 RUN echo "alias python=python3" >> ~/.bashrc
 RUN echo "alias pip=pip3" >> ~/.bashrc

@@ -15,11 +15,11 @@ networks:
 
 services:
   mongo:
-    image: mongo:3.4
+    image: mongo:4.4
     networks:
       - database
-    # ports:
-    # - 27017:27017 # Uncomment to expose mongo-port on host
+    ports:
+    - 27017:27017 # Uncomment to expose mongo-port on host
     volumes:
       - ${BASE_DIR}/db:/data/db
   webgme:
