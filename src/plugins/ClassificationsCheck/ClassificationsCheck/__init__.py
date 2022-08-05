@@ -198,6 +198,7 @@ class ClassificationsCheck(PluginBase):
                 output += "; ".join(classifications)
         else:
             output += " did not meet any classifications"
-        
-        logger.info('Creating ClassificationsCheck.text file with --> {0}'.format(output))
-        self.add_file('ClassificationsCheck.txt', output)
+
+        logger.info('Sending notification with output --> {0}'.format(output))
+        self.send_notification(output)
+        #self.add_file('ClassificationsCheck.txt', output)
