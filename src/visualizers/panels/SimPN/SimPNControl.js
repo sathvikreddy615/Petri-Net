@@ -156,7 +156,8 @@
                 const state = {
                     name: node.getAttribute('name'),
                     meta_type: node.isTypeOf(META['Place']) ? "Place" : "Transition",
-                    tokens: node.isTypeOf(META['Place']) ? node.getAttribute('tokens') : null,
+                    tokens_init: node.isTypeOf(META['Place']) ? node.getAttribute('tokens') : null,
+                    tokens_update: node.isTypeOf(META['Place']) ? node.getAttribute('tokens') : null,
                     paths_to: [],
                     paths_from: [],
                     position: node.getRegistry('position')
@@ -179,7 +180,7 @@
                             state.paths_to.push({
                                 id: dst_parentId,
                                 name: self._client.getNode(dst_parentId).getAttribute('name'),
-                                tokens: tokens,
+                                tokens_init: tokens,
                                 tokens_update: tokens,
                                 meta_type: self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })
@@ -188,7 +189,7 @@
                             state.paths_from.push({
                                 id: src_parentId,
                                 name: self._client.getNode(src_parentId).getAttribute('name'),
-                                tokens: tokens,
+                                tokens_init: tokens,
                                 tokens_update: tokens,
                                 meta_type: self._client.getNode(src_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })

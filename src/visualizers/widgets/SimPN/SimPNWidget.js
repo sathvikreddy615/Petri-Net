@@ -49,21 +49,21 @@
                     const currentElement = self._webgmeSM.states[id]
                     const in_places = currentElement.paths_from
                     const out_places = currentElement.paths_to
-                    const isTransitionEnabled = in_places.length == in_places.filter(x => x.tokens>0).length
+                    const isTransitionEnabled = in_places.length == in_places.filter(x => x.tokens_update > 0).length
                     if (isTransitionEnabled && out_places.length > 0) {
                         // iterate in places
                         in_places.forEach(p => {
                             console.log("decrementing tokens for in-places")
-                            self._webgmeSM.states[p.id].tokens--
+                            self._webgmeSM.states[p.id].tokens_update--
                         })
 
                         //update the tokens for out_places
                         out_places.forEach(p => {
                             console.log("incrementing tokens for out-places")
-                            self._webgmeSM.states[p.id].tokens++
+                            self._webgmeSM.states[p.id].tokens_update++
                         })
                         //self._jointPaper.updateViews();
-                        self.refresh()
+                        self.refresh(false)
                     } else {
                         //notify user that it is deadlocked
                         console.log("No enabled transition")
@@ -79,7 +79,7 @@
         this._logger.debug('Widget is resizing...');
     };
 
-    SimPNWidget.prototype.refresh = function () {
+    SimPNWidget.prototype.refresh = function (reset) {
         console.log("starting refresh")
         const self = this;
         self._jointSM.clear();
@@ -91,11 +91,18 @@
         Object.keys(sm.states).forEach(id => {
             let vertex = null;
             if (sm.states[id].meta_type == "Place") {
+                let tokens = 0
+                if (reset) {
+                    tokens = sm.states[id].tokens_init
+                    sm.states[id].tokens_update = tokens
+                } else {
+                    tokens = sm.states[id].tokens_update
+                }
                 vertex = new pn.Place({
                     position: sm.states[id].position,
                     attrs: {
                         '.label': {
-                            'text': `${sm.states[id].name}-${sm.states[id].tokens}`,
+                            'text': `${sm.states[id].name}-${tokens}`,
                             'fill': '#7c68fc' },
                         '.root': {
                             'stroke': '#9586fd',
@@ -105,7 +112,7 @@
                             'fill': '#7a7e9b'
                         }
                     },
-                    tokens: 1
+                    tokens: 5
                 });
             } else if (sm.states[id].meta_type == "Transition") {
                 vertex = new pn.Transition({
@@ -127,7 +134,6 @@
             sm.states[id].joint = vertex;
             sm.id2state[vertex.id] = id;
         });
-        console.log(sm)
 
         // then create the links
         Object.keys(sm.states).forEach(stateId => {
@@ -191,7 +197,7 @@
 
         self._webgmeSM = graph;
         console.log("doing hit")
-        self.refresh()
+        self.refresh(true)
     };
 
     SimPNWidget.prototype.CreateLink = function (a, b) {
@@ -216,15 +222,15 @@
     SimPNWidget.prototype.fireTransition = function (element, states) {
         console.log("firing transitions")
         element.paths_from.forEach(p => {
-            if (p.tokens > 0)
+            if (p.tokens_update > 0)
                 // console.log(this._webgmeSM)
                 // console.log("this hit")
                 // console.log(states)
-                this._webgmeSM.states[p.id].tokens -= 1
+                this._webgmeSM.states[p.id].tokens_update -= 1
         })
 
         element.paths_from.forEach(p => {
-            this._webgmeSM.states[p.id].tokens += 1
+            this._webgmeSM.states[p.id].tokens_update += 1
         })
         
         //self._webgmeSM.states
@@ -245,6 +251,11 @@
     SimPNWidget.prototype.resetPetriNet = function () {
         // this._webgmeSM.current = this._webgmeSM.init;
         // this._decorateMachine();
+        const self = this;
+
+        //self._webgmeSM = graph;
+        console.log("reset petri net")
+        self.refresh(true)
     };
 
     SimPNWidget.prototype._decorateMachine = function() {
