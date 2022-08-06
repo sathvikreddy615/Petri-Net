@@ -49,20 +49,90 @@
                     const currentElement = self._webgmeSM.states[id]
                     const in_places = currentElement.paths_from
                     const out_places = currentElement.paths_to
+
+                    let graph = self._webgmeSM.states
+                    let map = self._webgmeSM.id2state
+                    
                     const isTransitionEnabled = in_places.length == in_places.filter(x => x.tokens_update > 0).length
                     if (isTransitionEnabled && out_places.length > 0) {
-                        // iterate in places
-                        in_places.forEach(p => {
-                            console.log("decrementing tokens for in-places")
-                            self._webgmeSM.states[p.id].tokens_update--
-                        })
+                        let source = graph[map[currentElement.joint.id]]
+                        let source_id = source.id
 
-                        //update the tokens for out_places
-                        out_places.forEach(p => {
-                            console.log("incrementing tokens for out-places")
-                            self._webgmeSM.states[p.id].tokens_update++
+                        let queue = [], visited = [], visited_nodes = []
+                        let parent = {}
+
+                        visited_nodes.push(source)
+                        visited.push(source_id)
+                        queue.push(source_id)
+                        parent[source_id] = null
+
+                        while (queue.length != 0) {
+                            let s = queue.shift()
+                            graph[s].paths_to.forEach(p => {
+                                if (!visited.includes(p["id"])) {
+                                    let v = p.id
+                                    visited.push(v)
+                                    queue.push(v)
+                                    visited_nodes.push(p)
+                                    parent[v] = s
+                                }
+                            })
+                        }
+                        
+                        const explored = []
+                        visited.forEach(e => {
+                            if (graph[e].meta_type == "Transition") {
+                                let inPlaces = graph[e].paths_from
+                                let outPlaces = graph[e].paths_to
+                                const subIsTransitionEnabled = inPlaces.length == inPlaces.filter(x => x.tokens_update > 0).length
+                                if (subIsTransitionEnabled && outPlaces.length > 0) {
+                                    // iterate in places
+                                    inPlaces.forEach(p => {
+                                        if (!explored.includes(p.id)) {
+                                            explored.push(p.id)
+
+                                            self._webgmeSM.states[p.id].tokens_update--
+                                            self._webgmeSM.states[graph[e].id].paths_from[inPlaces.findIndex(x => x.id ===p.id)].tokens_update--
+                                            
+                                            // check if other transitions have a direct path to this place. if so, update the tokens
+                                            visited.forEach(v => {
+                                                if (graph[v].meta_type == "Transition" && graph[v].id != graph[e].id) {
+                                                    graph[v].paths_to.forEach((o, i) => {
+                                                        if (o.id == p.id) {
+                                                            self._webgmeSM.states[graph[v].id].paths_to[i].tokens_update--
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    })
+    
+                                    //update the tokens for out_places
+                                    outPlaces.forEach(p => {
+                                        if (!explored.includes(p.id)) {
+                                            explored.push(p.id)
+
+                                            self._webgmeSM.states[p.id].tokens_update++
+                                            self._webgmeSM.states[graph[e].id].paths_to[outPlaces.findIndex(x => x.id ===p.id)].tokens_update++
+                                            
+                                            // check if other transitions have a direct path to this place. if so, update the tokens
+                                            visited.forEach(v => {
+                                                if (graph[v].meta_type == "Transition" && graph[v].id != graph[e].id) {
+                                                    graph[v].paths_from.forEach((o, i) => {
+                                                        if (o.id == p.id) {
+                                                            self._webgmeSM.states[graph[v].id].paths_from[i].tokens_update++
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    // add some idicator that it is deadlocked
+                                    console.log("transition is deadlocked")
+                                }
+                            }
                         })
-                        //self._jointPaper.updateViews();
                         self.refresh(false)
                     } else {
                         //notify user that it is deadlocked
@@ -80,7 +150,6 @@
     };
 
     SimPNWidget.prototype.refresh = function (reset) {
-        console.log("starting refresh")
         const self = this;
         self._jointSM.clear();
         const sm = self._webgmeSM;
@@ -115,6 +184,14 @@
                     tokens: 5
                 });
             } else if (sm.states[id].meta_type == "Transition") {
+                if (reset) {
+                    sm.states[id].paths_from.forEach(p => {
+                        p.tokens_update = p.tokens_init
+                    })
+                    sm.states[id].paths_to.forEach(p => {
+                        p.tokens_update = p.tokens_init
+                    })
+                }
                 vertex = new pn.Transition({
                     position: sm.states[id].position,
                     attrs: {
@@ -196,7 +273,6 @@
         const self = this;
 
         self._webgmeSM = graph;
-        console.log("doing hit")
         self.refresh(true)
     };
 

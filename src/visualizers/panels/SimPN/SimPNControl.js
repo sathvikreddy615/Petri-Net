@@ -154,6 +154,7 @@
             if (node.isTypeOf(META['Place']) || node.isTypeOf(META['Transition'])) {
                 //right now we only interested in states...
                 const state = {
+                    id: elementId,
                     name: node.getAttribute('name'),
                     meta_type: node.isTypeOf(META['Place']) ? "Place" : "Transition",
                     tokens_init: node.isTypeOf(META['Place']) ? node.getAttribute('tokens') : null,
@@ -176,7 +177,7 @@
                         const dst_parentId = dst_node.getParentId()
                     
                         if(src_parentId === elementId) {
-                            const tokens = self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? self._client.getNode(src_parentId).getAttribute('tokens') : null
+                            const tokens = self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? self._client.getNode(dst_parentId).getAttribute('tokens') : null
                             state.paths_to.push({
                                 id: dst_parentId,
                                 name: self._client.getNode(dst_parentId).getAttribute('name'),
