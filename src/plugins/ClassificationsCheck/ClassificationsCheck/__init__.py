@@ -154,23 +154,23 @@ class ClassificationsCheck(PluginBase):
                                         
                 for arc in nodes:
                     if core.is_instance_of(arc, META["Arc"]):
-                        src_pt = core.get_path(core.get_parent(path2node[core.get_pointer_path(arc, 'src')])) 
-                        dst_pt = core.get_path(core.get_parent(path2node[core.get_pointer_path(arc, 'dst')]))
+                        src_pt = core.get_path(path2node[core.get_pointer_path(arc, 'src')]) 
+                        dst_pt = core.get_path(path2node[core.get_pointer_path(arc, 'dst')])
                         if src_pt == pt_id:
-                            dst_pt_metanode = core.get_base_type(core.get_parent(path2node[core.get_pointer_path(arc, 'dst')]))
+                            dst_pt_metanode = core.get_base_type(path2node[core.get_pointer_path(arc, 'dst')])
                             pt["paths_to"].append(
                                 {
                                     "id":dst_pt,
-                                    "name":core.get_attribute(core.get_parent(path2node[core.get_pointer_path(arc, 'dst')]), 'name'),
+                                    "name":core.get_attribute(path2node[core.get_pointer_path(arc, 'dst')], 'name'),
                                     "meta_type":core.get_attribute(core.get_meta_type(dst_pt_metanode), 'name')
                                 }
                             )
                         elif dst_pt == pt_id:
-                            src_pt_metanode = core.get_base_type(core.get_parent(path2node[core.get_pointer_path(arc, 'src')]))
+                            src_pt_metanode = core.get_base_type(path2node[core.get_pointer_path(arc, 'src')])
                             pt["paths_from"].append(
                                 {
                                     "id":src_pt,
-                                    "name":core.get_attribute(core.get_parent(path2node[core.get_pointer_path(arc, 'src')]), 'name'),
+                                    "name":core.get_attribute(path2node[core.get_pointer_path(arc, 'src')], 'name'),
                                     "meta_type":core.get_attribute(core.get_meta_type(src_pt_metanode), 'name')
                                 }
                             )
