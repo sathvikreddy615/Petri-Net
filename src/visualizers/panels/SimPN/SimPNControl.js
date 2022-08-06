@@ -176,23 +176,23 @@
                         const dst_node = self._client.getNode(dst_id)
                         const dst_parentId = dst_node.getParentId()
                     
-                        if(src_parentId === elementId) {
-                            const tokens = self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? self._client.getNode(dst_parentId).getAttribute('tokens') : null
+                        if(src_id === elementId) {
+                            const tokens = self._client.getNode(dst_id).isTypeOf(META['Place']) ? self._client.getNode(dst_id).getAttribute('tokens') : null
                             state.paths_to.push({
-                                id: dst_parentId,
-                                name: self._client.getNode(dst_parentId).getAttribute('name'),
+                                id: dst_id,
+                                name: self._client.getNode(dst_id).getAttribute('name'),
                                 tokens_init: tokens,
                                 tokens_update: tokens,
-                                meta_type: self._client.getNode(dst_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
+                                meta_type: self._client.getNode(dst_id).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })
-                        } else if (dst_parentId == elementId) {
-                            const tokens = self._client.getNode(src_parentId).isTypeOf(META['Place']) ? self._client.getNode(src_parentId).getAttribute('tokens') : null
+                        } else if (dst_id == elementId) {
+                            const tokens = self._client.getNode(src_id).isTypeOf(META['Place']) ? self._client.getNode(src_id).getAttribute('tokens') : null
                             state.paths_from.push({
-                                id: src_parentId,
-                                name: self._client.getNode(src_parentId).getAttribute('name'),
+                                id: src_id,
+                                name: self._client.getNode(src_id).getAttribute('name'),
                                 tokens_init: tokens,
                                 tokens_update: tokens,
-                                meta_type: self._client.getNode(src_parentId).isTypeOf(META['Place']) ? "Place" : "Transition"
+                                meta_type: self._client.getNode(src_id).isTypeOf(META['Place']) ? "Place" : "Transition"
                             })
                         }
                     }
