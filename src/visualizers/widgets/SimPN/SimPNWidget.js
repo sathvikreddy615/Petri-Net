@@ -32,7 +32,7 @@
         // Create a dummy header
         this._el.append('<h3>SimPN Events:</h3>');
 
-        this._jointSM = new joint.dia.Graph;
+        this._jointSM = new joint.dia.Graph();
         this._jointPaper = new joint.dia.Paper({
             el: this._el,
             width : width,
@@ -156,38 +156,47 @@
                     position: sm.states[id].position,
                     attrs: {
                         '.label': {
-                            'text': `${sm.states[id].name}-${tokens}`,
-                            'fill': '#7c68fc' },
+                            'text': `${sm.states[id].name} (${tokens})`,
+                            'fill': '#7c68fc' 
+                        },
                         '.root': {
                             'stroke': '#9586fd',
-                            'stroke-width': 3
+                            'stroke-width': 3,
                         },
                         '.tokens > circle': {
                             'fill': '#7a7e9b'
                         }
                     },
-                    tokens: 5
+                    tokens: tokens
                 });
             } else if (sm.states[id].meta_type == "Transition") {
-                if (reset) {
-                    sm.states[id].paths_from.forEach(p => {
-                        p.tokens_update = p.tokens_init
-                    })
-                    sm.states[id].paths_to.forEach(p => {
-                        p.tokens_update = p.tokens_init
-                    })
-                }
+                const inPlaces = []
+                sm.states[id].paths_from.forEach(p => {
+                    if (reset) {
+                        sm.states[p.id].tokens_update = sm.states[p.id].tokens_init
+                    }
+                    inPlaces.push(sm.states[p.id])
+                })
+                const outPlaces = []
+                sm.states[id].paths_to.forEach(p => {
+                    if (reset) {
+                        sm.states[p.id].tokens_update = sm.states[p.id].tokens_init
+                    }
+                    outPlaces.push(sm.states[p.id])
+                })
+                const isTransitionEnabled = inPlaces.length == inPlaces.filter(x => x.tokens_update > 0).length && outPlaces.length > 0
+
                 vertex = new pn.Transition({
                     position: sm.states[id].position,
                     attrs: {
                         '.label': {
                             'text': sm.states[id].name,
-                            'fill': '#fe854f'
+                            'fill': '#9586fd'//Green:'#a0eb31' //Red: '#fe854f'
                         },
                         '.root': {
-                            'fill': '#9586fd',
-                            'stroke': '#9586fd',
-                            'cursor': 'pointer'
+                            'fill': isTransitionEnabled ? '#9586fd' : '#fe854f',
+                            'stroke': isTransitionEnabled ? '#9586fd' : '#fe854f',
+                            'cursor': isTransitionEnabled ? 'pointer' : 'not-allowed'
                         }
                     }
                 });
