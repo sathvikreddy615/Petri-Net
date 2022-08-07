@@ -47,14 +47,21 @@
                 const id = self._webgmeSM.id2state[elementView.model.id]
                 if (self._webgmeSM.states[id].meta_type == "Transition") {
                     const currentElement = self._webgmeSM.states[id]
-                    const in_places = currentElement.paths_from
-                    const out_places = currentElement.paths_to
-
+                    
                     let graph = self._webgmeSM.states
                     let map = self._webgmeSM.id2state
+
+                    const source_inPlaces = []
+                    currentElement.paths_from.forEach(p => {
+                        source_inPlaces.push(graph[p.id])
+                    })
+                    const source_outPlaces = []
+                    currentElement.paths_to.forEach(p => {
+                        source_outPlaces.push(graph[p.id])
+                    })
                     
-                    const isTransitionEnabled = in_places.length == in_places.filter(x => x.tokens_update > 0).length
-                    if (isTransitionEnabled && out_places.length > 0) {
+                    const isTransitionEnabled = source_inPlaces.length == source_inPlaces.filter(x => x.tokens_update > 0).length
+                    if (isTransitionEnabled && source_outPlaces.length > 0) {
                         let source = graph[map[currentElement.joint.id]]
                         let source_id = source.id
 
@@ -81,54 +88,32 @@
                         
                         const explored = []
                         visited.forEach(e => {
-                            if (graph[e].meta_type == "Transition") {
-                                let inPlaces = graph[e].paths_from
-                                let outPlaces = graph[e].paths_to
+                            if (graph[e].meta_type == "Transition") {                                
+                                const inPlaces = []
+                                graph[e].paths_from.forEach(p => {
+                                    inPlaces.push(graph[p.id])
+                                })
+                                const outPlaces = []
+                                graph[e].paths_to.forEach(p => {
+                                 outPlaces.push(graph[p.id])
+                                })
+
                                 const subIsTransitionEnabled = inPlaces.length == inPlaces.filter(x => x.tokens_update > 0).length
                                 if (subIsTransitionEnabled && outPlaces.length > 0) {
-                                    // iterate in places
                                     inPlaces.forEach(p => {
                                         if (!explored.includes(p.id)) {
-                                            explored.push(p.id)
-
                                             self._webgmeSM.states[p.id].tokens_update--
-                                            self._webgmeSM.states[graph[e].id].paths_from[inPlaces.findIndex(x => x.id ===p.id)].tokens_update--
-                                            
-                                            // check if other transitions have a direct path to this place. if so, update the tokens
-                                            visited.forEach(v => {
-                                                if (graph[v].meta_type == "Transition" && graph[v].id != graph[e].id) {
-                                                    graph[v].paths_to.forEach((o, i) => {
-                                                        if (o.id == p.id) {
-                                                            self._webgmeSM.states[graph[v].id].paths_to[i].tokens_update--
-                                                        }
-                                                    })
-                                                }
-                                            })
+                                            explored.push(p.id)
                                         }
                                     })
     
-                                    //update the tokens for out_places
-                                    outPlaces.forEach(p => {
+                                 outPlaces.forEach(p => {
                                         if (!explored.includes(p.id)) {
-                                            explored.push(p.id)
-
                                             self._webgmeSM.states[p.id].tokens_update++
-                                            self._webgmeSM.states[graph[e].id].paths_to[outPlaces.findIndex(x => x.id ===p.id)].tokens_update++
-                                            
-                                            // check if other transitions have a direct path to this place. if so, update the tokens
-                                            visited.forEach(v => {
-                                                if (graph[v].meta_type == "Transition" && graph[v].id != graph[e].id) {
-                                                    graph[v].paths_from.forEach((o, i) => {
-                                                        if (o.id == p.id) {
-                                                            self._webgmeSM.states[graph[v].id].paths_from[i].tokens_update++
-                                                        }
-                                                    })
-                                                }
-                                            })
+                                            explored.push(p.id)
                                         }
                                     })
                                 } else {
-                                    // add some idicator that it is deadlocked
                                     console.log("transition is deadlocked")
                                 }
                             }
