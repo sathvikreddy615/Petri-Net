@@ -1,51 +1,79 @@
-# WDeStuP
-This repository is intended to server as a bootstrap for a fully docker based Design Studio development with WebGME.
-This way, the developer's computer can remain clean from installation (other than docker and required images) of any additional software.
-So, forget the hassle of installing and running mongoDB, or Nodejs+npm, or Python that all can be challenging based on your actual OS.
-Just enjoy the pure joy of creating a Design Studio that really boost the productivity of engineers!
+# Petri Net Design Studio
 
-## Initialization
-The easiest way to start using this project is to fork it in git. Alternatively, you can create your empty repository, copy the content and just rename all instances of 'WDeStuP' to your liking. Assuming you fork, you can start-up following this few simple steps:
-- install [Docker-Desktop](https://www.docker.com/products/docker-desktop)
-- clone the repository
-- edit the '.env' file so that the BASE_DIR variable points to the main repository directory
-- `docker-compose up -d`
-- connect to your server at http://localhost:8888
+## What is the domain about
+Petri nets are a mathematical modeling graph used to describe state changes within distributed systems. A simple net contains a Place and a Transition, which are connected through an Arc. Places may contain any number of tokens, and a transition's role is to process these tokens. A transition is only enabled, and will fire, if all of its in places contain at least one token. When a transition fires, it consumes a single input token at a time and distributes that token to one of its out places. This means that the input place will have its token count decrease by 1, while the output place will increase by 1. The state of the Petri net is known as the marking, which represents the distribution of tokens. Places are typically depicted with circles, Transitions with squares, and Arcs connecting Places and Transitions with line-arrows.
 
-## Main docker commands
-All of the following commands should be used from your main project directory (where this file also should be):
+## A few sentence on the typical use-cases of the domain
+
+The domanin can be used to:
+- gain an understanding about Petri nets
+- interpret the modeling language
+- simplify complex ideas
+- model concurrent and distributed systems
+
+## How to install the design studio
+
+1. Clone this repository
+2. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+3. Install [NodeJS](https://nodejs.org/en/) (LTS recommended)
+
+## How to start modeling once the studio is installed
+
+### Building and launching the containers:
+
+You can launch, build, stop, and debug the Docker containers using the following commands. You can also use the Docker Desktop client to start/stop your containers.
+
+All of the following commands should be used from your main project directory (where this file also should be). Note: Docker Desktop client can also be used for starting and stopping your containes.
+- To **start** the server just use `docker-compose -d`
 - To **rebuild** the complete solution `docker-compose build` (and follow with the `docker-compose up -d` to restart the server)
+- To **start** the server and **rebuild** simultaneously just use `docker-compose -d --build`
 - To **debug** using the logs of the WebGME service `docker-compose logs webgme`
 - To **stop** the server just use `docker-compose stop`
 - To **enter** the WebGME container and use WebGME commands `docker-compose exec webgme bash` (you can exit by simply closing the command line with linux command 'exit') 
 - To **clean** the host machine of unused (old version) images `docker system prune -f`
-## Using WebGME commands to add components to your project
-In general, you can use any WebGME commands after you successfully entered the WebGME container. It is important to note that only the src directory is shared between the container and the host machine, so you need to additionally synchronize some files after finishing your changes inside the container! The following is few scenarios that frequently occur:
-### Adding new npm dependency
-When you need to install a new library you should follow these steps:
-- enter the container
-- `npm i -s yourNewPackageName`
-- exit the container
-- copy the package.json file `docker-compose cp webgme:/usr/app/package.json package.json`
-### Adding new interpreter/plugin to your DS
-Follow these steps to add a new plugin:
-- enter the container
-- for JS plugin: `npm run webgme new plugin MyPluginName`
-- for Python plugin: `npm run webgme new plugin -- --language Python MyPluginName`
-- exit container
-- copy webgme-setup.json `docker-compose cp webgme:/usr/app/webgme-setup.json webgme-setup.json`
-- copy webgme-config `docker-compose cp webgme:/usr/app/config/config.webgme.js config/config.webgme.js`
-### Adding new visualizer to your DS
-Follow these steps to add a new visualizer:
-- enter the container
-- `npm run webgme new viz MyVisualizerName`
-- exit container
-- copy webgme-setup.json `docker-compose cp webgme:/usr/app/webgme-setup.json webgme-setup.json`
-- copy webgme-config `docker-compose cp webgme:/usr/app/config/config.webgme.js config/config.webgme.js`
-### Adding new seed to your DS
-Follow these steps to add a new seed based on an existing project in your server:
-- enter the container
-- `npm run webgme new seed MyProjectName -- --seed-name MySeedName`
-- exit container
-- copy webgme-setup.json `docker-compose cp webgme:/usr/app/webgme-setup.json webgme-setup.json`
-- copy webgme-config `docker-compose cp webgme:/usr/app/config/config.webgme.js config/config.webgme.js`
+
+### Connecting to server:
+
+Connect to your local server at http://localhost:8888
+
+### Creating a model:
+
+Before creating your own Petri net models, please see the example models that have been provided under the Root composition tab. Once you have a solid understanding of Petri net, you can get started creating your own models by following these steps:
+
+1. Once the design studio loads, you will want to create a new project by clicking "Create new..." and naming the project
+2. Choose "PetriNet" from the list options under "Choose an existing seed". This will clone the meta model that you can use to create your own models!
+2. To create a model, look under the Object Browser and drag "PetriNets" onto the screen. Select "Copy Here"
+3. At the top left of the newly copied node, click the down arrow to drill into the composition
+4. In this view, you can use the Place and Transition elements to create your very own Petri net. If you hover over either element, 4 squares around the object will pop up. Click one of the squares and drag from one element square to the other element's square to establish a connection.
+5. Happy modeling!
+
+## Once a network is build, what feature your studio provides and how can the user use those functions
+
+### Classifications:
+
+This Petri net recognizes four classifications, which are described as follows:
+
+- Free-choice petri net - if the intersection of the inplaces sets of two transitions are not empty, then the two transitions should be the same (or in short, each transition has its own unique set if inplaces)
+- State machine - a petri net is a state machine if every transition has exactly one inplace and one outplace.
+- Marked graph - a petri net is a marked graph if every place has exactly one out transition and one in transition.
+- Workflow net - a petri net is a workflow net if it has exactly one source place s where *s =∅, one sink place o where o* =∅, and every x∈P∪T is on a path from s to o.
+
+By following the below steps, you can easily check if your models recognize any of these classifications using the tools built into the design studio.
+
+1. Click "Execute Plug-in" button and select "Classifications Check"
+2. Click "Run" button
+3. Under the "NOTIFICATIONS" section in the bottom right, you will see a popup that will display a list of the classifications that your model recognized, or tell you that it didn't meet any of the criteria
+
+### Simulation:
+
+*How to use it:*
+
+The SimPN visualizer can be used to simulate and interact with your model. Looking nearly identical to the Composition model, the user can click on an enabled transitions to fire and progress markings in the network. As you can see in the image below, Places are visualized as blue circles, with the name of the place and number of tokens labeled above it. Enabled Transitions are represented as blue blocks and also have their names labeled above the element. However, if a transition is disabled, the block will be colored red, indicating to the user that the transition cannot be fired at the current state of the net.
+
+*Resetting the Model:*
+
+The user can reset the model back to its initial state by clicking "Reset Simulator" button in the toolbar. 
+
+*Check Petri net Classifications:*
+
+User has the ability to check if their model recognizes any of the four classifications within the simulator by clicking the "Check Petri net classifications" button in the toolbar. Exactly like the "Execute Plug-in" button, this information will popup in the "NOTIFICATIONS" section of the design studio.
