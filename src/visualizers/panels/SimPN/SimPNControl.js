@@ -33,9 +33,6 @@
 
         this._initWidgetEventHandlers();
 
-        // we need to fix the context of this function as it will be called from the widget directly
-        this.setFireableEvents = this.setFireableEvents.bind(this);
-
         this._logger.debug('ctor finished');
     }
 
@@ -200,7 +197,6 @@
                 pn.states[elementId] = state;
             }
         });
-        //pn.setFireableEvents = this.setFireableEvents;
 
         self._widget.initMachine(pn);
     };
@@ -209,28 +205,6 @@
         const self = this;
         self._networkRootLoaded = false;
         //self._widget.destroyMachine();
-    };
-
-    SimPNControl.prototype.setFireableEvents = function (events) {
-        // this._fireableEvents = events;
-        // if (events && events.length > 1) {
-        //     // we need to fill the dropdow button with options
-        //     this.$btnEventSelector.clear();
-        //     events.forEach(event => {
-        //         this.$btnEventSelector.addButton({
-        //             text: event,
-        //             title: 'fire event: '+ event,
-        //             data: {event: event},
-        //             clickFn: data => {
-        //                 this._widget.fireEvent(data.event);
-        //             }
-        //         });
-        //     });
-        // } else if (events && events.length === 0) {
-        //     this._fireableEvents = null;
-        // }
-
-        // this._displayToolbarItems();
     };
 
     /* * * * * * * * Visualizer life cycle callbacks * * * * * * * */

@@ -323,7 +323,6 @@
             sm.states[stateId].joint.attr('body/stroke', '#333333');
         });
         //sm.states[sm.current].joint.attr('body/stroke', 'blue');
-        //sm.setFireableEvents(Object.keys(sm.states[sm.current].next));
     };
     
 
