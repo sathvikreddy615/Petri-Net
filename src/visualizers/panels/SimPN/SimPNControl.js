@@ -330,19 +330,7 @@
             }
         });
         this._toolbarItems.push(this.$btnResetSim);
-
-        /************** Play Button *******************/
-
-        // if there is only one event we just show a play button
-        this.$btnSingleEvent = toolBar.addButton({
-            title: 'Fire event',
-            icon: 'glyphicon glyphicon-play',
-            clickFn: function (/*data*/) {
-                self._widget.fireEvent(self._fireableEvents[0]);
-            }
-        });
-        this._toolbarItems.push(this.$btnSingleEvent);
-
+        
         this._toolbarInitialized = true;
     };
 

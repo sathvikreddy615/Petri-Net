@@ -313,17 +313,6 @@
         console.log(element)
     }
 
-    SimPNWidget.prototype.fireEvent = function (event) {
-        // const self = this;
-        // const current = self._webgmeSM.states[self._webgmeSM.current];
-        // const link = current.jointNext[event];
-        // const linkView = link.findView(self._jointPaper);
-        // linkView.sendToken(joint.V('circle', { r: 10, fill: 'black' }), {duration:500}, function() {
-        //    self._webgmeSM.current = current.next[event];
-        //    self._decorateMachine();
-        // });
-    };
-
     SimPNWidget.prototype.resetPetriNet = function () {
         // this._webgmeSM.current = this._webgmeSM.init;
         // this._decorateMachine();
