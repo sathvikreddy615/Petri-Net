@@ -120,7 +120,6 @@
                         })
                         self.refresh(false)
                     } else {
-                        //notify user that it is deadlocked
                         console.log("No enabled transition")
                     }         
                 }
@@ -308,12 +307,8 @@
     }
 
     SimPNWidget.prototype.resetPetriNet = function () {
-        // this._webgmeSM.current = this._webgmeSM.init;
-        // this._decorateMachine();
+        console.log("Reseting Petri Net to original state")
         const self = this;
-
-        //self._webgmeSM = graph;
-        console.log("reset petri net")
         self.refresh(true)
     };
 
