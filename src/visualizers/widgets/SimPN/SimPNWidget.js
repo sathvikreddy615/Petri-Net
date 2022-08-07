@@ -60,8 +60,8 @@
                         source_outPlaces.push(graph[p.id])
                     })
                     
-                    const isTransitionEnabled = source_inPlaces.length == source_inPlaces.filter(x => x.tokens_update > 0).length
-                    if (isTransitionEnabled && source_outPlaces.length > 0) {
+                    const isTransitionEnabled = source_inPlaces.length == source_inPlaces.filter(x => x.tokens_update > 0).length && source_outPlaces.length > 0
+                    if (isTransitionEnabled) {
                         let source = graph[map[currentElement.joint.id]]
                         let source_id = source.id
 
@@ -98,8 +98,8 @@
                                  outPlaces.push(graph[p.id])
                                 })
 
-                                const subIsTransitionEnabled = inPlaces.length == inPlaces.filter(x => x.tokens_update > 0).length
-                                if (subIsTransitionEnabled && outPlaces.length > 0) {
+                                const subIsTransitionEnabled = inPlaces.length == inPlaces.filter(x => x.tokens_update > 0).length && outPlaces.length > 0
+                                if (subIsTransitionEnabled) {
                                     inPlaces.forEach(p => {
                                         if (!explored.includes(p.id)) {
                                             self._webgmeSM.states[p.id].tokens_update--
