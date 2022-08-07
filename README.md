@@ -41,11 +41,27 @@ Connect to your local server at http://localhost:8888
 Before creating your own Petri net models, please see the example models that have been provided under the Root composition tab. Once you have a solid understanding of Petri net, you can get started creating your own models by following these steps:
 
 1. Once the design studio loads, you will want to create a new project by clicking "Create new..." and naming the project
-2. Choose "PetriNet" from the list options under "Choose an existing seed". This will clone the meta model that you can use to create your own models!
-2. To create a model, look under the Object Browser and drag "PetriNets" onto the screen. Select "Copy Here"
-3. At the top left of the newly copied node, click the down arrow to drill into the composition
-4. In this view, you can use the Place and Transition elements to create your very own Petri net. If you hover over either element, 4 squares around the object will pop up. Click one of the squares and drag from one element square to the other element's square to establish a connection.
-5. Happy modeling!
+
+![Create New Project](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/Create_new.png)
+
+2. Choose "PetriNet" from the list options under "Choose an existing seed" and click "Create". This will clone the meta model that you can use to create your own models!
+
+![Clone Existing Seed](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/choose_seed.png)
+
+4. To create a model, look under the Object Browser and drag "PetriNets" onto the screen. Select "Copy Here"
+
+![Copy Here](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/cope_here.png)
+
+5. At the top left of the newly copied node, click the down arrow to drill into the composition
+
+![Drill Down](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/drill_down.png)
+
+7. In this view, you can use the Place and Transition elements to create your very own Petri net. If you hover over either element, 4 squares around the object will pop up. Click one of the squares and drag from one element square to the other element's square to establish a connection.
+
+![Place and Transition](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/Places_Transitions.png)
+![Example Model](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/ModelExample.png)
+
+9. Happy modeling!
 
 ## Once a network is build, what feature your studio provides and how can the user use those functions
 
@@ -61,14 +77,28 @@ This Petri net recognizes four classifications, which are described as follows:
 By following the below steps, you can easily check if your models recognize any of these classifications using the tools built into the design studio.
 
 1. Click "Execute Plug-in" button and select "Classifications Check"
+
+![Execute Plug-in](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/PluginInstructions1.png)
+
 2. Click "Run" button
-3. Under the "NOTIFICATIONS" section in the bottom right, you will see a popup that will display a list of the classifications that your model recognized, or tell you that it didn't meet any of the criteria
+
+![Run](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/PluginInstructions2.png)
+
+3. Under the "NOTIFICATIONS" section in the bottom right, you will see a popup that will display a list of the classifications that your model recognized. If your model, did not meet any of the classificationm, it will simply tell you that.
+
+![Plug-in Notification 1](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/PluginNotification1.png)
+
+![Plug-in Notification 2](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/PluginNotification2.png)
 
 ### Simulation:
 
 *How to use it:*
 
 The SimPN visualizer can be used to simulate and interact with your model. Looking nearly identical to the Composition model, the user can click on an enabled transitions to fire and progress markings in the network. As you can see in the image below, Places are visualized as blue circles, with the name of the place and number of tokens labeled above it. Enabled Transitions are represented as blue blocks and also have their names labeled above the element. However, if a transition is disabled, the block will be colored red, indicating to the user that the transition cannot be fired at the current state of the net.
+
+![SimPN](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/SimPn.png)
+
+![SimPN Example](https://github.com/sathvikreddy615/Petri-Net/blob/main/images/SimPN_Example.png)
 
 *Resetting the Model:*
 
